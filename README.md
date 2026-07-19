@@ -247,9 +247,10 @@ The following should be in place before starting:
 > policies configured here serve as the foundation for subsequent Okta labs. Continue 
 > to the [Okta IAM Lab Series](https://github.com/RyanKennon/Okta-Lab-Series/tree/main) 
 > for the next lab in the series.
+
 ---
 <p align="left">
-  <a href="(https://github.com/RyanKennon/okta-enterpirse-sso/tree/main)">⬅ Lab 4 — Enterprise SSO (SAML 2.0)</a>
+  <a href="https://github.com/RyanKennon/okta-enterpirse-sso/tree/main">⬅ Lab 4 — Enterprise SSO (SAML 2.0)</a>
 </p>
 <p align="right">
   <a href="link-to-lab-6-repo">Lab 6 — Okta Lifecycle Management & Provisioning ➡</a>
