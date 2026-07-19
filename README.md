@@ -43,6 +43,8 @@ The following should be in place before starting:
 
 ### 1) Enroll Okta Verify
 
+Confirming Okta Verify is active as an authenticator makes it available as a valid factor across the org. Without this step, no policy referencing Okta Verify can actually be satisfied, since the authenticator itself has to be enabled before it can be enrolled or used during sign-in.
+
 1. Open the **Security** tab then go to **Authenticators**
 2. Go to the **Setup** tab then to the right of **Okta Verify** confirm the **Status** says **Active**
 3. If it says **Inactive** click the **Actions** dropdown and select **Activate**
@@ -54,6 +56,8 @@ The following should be in place before starting:
 ---
 
 ### 2) Passwordless Enrollment
+
+Creating a Passwordless Policy and restricting it to Okta Verify FastPass and TOTP allows a user to authenticate without ever entering a password, relying solely on possession of their enrolled device. Assigning this policy to an application determines which app's sign-in flow will actually enforce this passwordless requirement.
 
 1. Go to the **Security** tab and then **Authentication Policies**
 2. Select **App Sign-In** then **Create Policy**
@@ -97,9 +101,11 @@ The following should be in place before starting:
 
 ### 3) Network Zones
 
-1. In the **Okta Administrator Console** got to the **Security** tab then **Networks**
+Defining named IP zones gives Okta a way to recognize network context as part of the sign-in decision. The Corporate Network zone represents a trusted location, while the Blocked Region zone represents a location that should be denied outright — both are later referenced as conditions inside authentication policy rules rather than being enforced on their own.
+
+1. In the **Okta Administrator Console** go to the **Security** tab then **Networks**
 2. Press the **Add Zone** dropdown then select **IP Zone**
-3. Add an IP Zone with the following information the press **Save:**
+3. Add an IP Zone with the following information then press **Save:**
    - **Zone Name:** Corporate Network
    - **Gateway IPs:** `<Your Public IP Address>/32`
   
@@ -109,7 +115,7 @@ The following should be in place before starting:
 
 4. Select **Add Zone** again then **IP Zone**
 5. Add an IP Zone with the following information then press **Save:**
-   - **Zone Name:** Blocked Reigon
+   - **Zone Name:** Blocked Region
    - **Block Access from IPs Matching Conditions Listed in this Zone:** Check
    - **Gateway IPs:** 192.168.99.0/24
   
@@ -121,10 +127,12 @@ The following should be in place before starting:
 
 ### 4) Risk-Based Adaptive MFA Policy
 
+Building separate rules for users inside versus outside the defined network zones demonstrates adaptive, risk-based authentication. A user on the corporate network is treated as lower risk and only needs one factor, while a user outside that network is treated as higher risk and must satisfy password plus an additional factor.
+
 1. Go to the **Security** tab and then **Authentication Policies** then **App Sign-In**
 2. Go to the **Standard Employee Policy** then select **Edit** then **Add Rule**
 3. Create a rule with the following information then **Save:**
-   - **Rule Name** Allow on Coporate Network
+   - **Rule Name** Allow on Corporate Network
    - **And User's IP Is:** In Any Network Zone Defined in Okta
    - **Then Access Is:** Allowed After Successful Authentication
    - **And User Must Authenticate With:** Any 1 Factor Type
@@ -143,7 +151,7 @@ The following should be in place before starting:
   <img width="1350" height="529" alt="image" src="https://github.com/user-attachments/assets/91aba024-251a-44cc-99c7-0e08ed47ea11" />
 </p>
 
-5. Open the **Application** tab then **Add App**
+5. Open the **Applications** tab then **Add App**
 6. Select **Add** next to **Okta Dashboard**
 7. Select **Add Anyway** then **Done**
 
@@ -165,6 +173,8 @@ The following should be in place before starting:
 
 ### 5) Step-Up Authentication
 
+Configuring a High Assurance Policy with re-authentication required every time a resource is accessed ensures that even a user with an active session cannot reach a sensitive application without proving their identity again. This models real-world step-up authentication, where access to higher-risk resources demands stronger, more recent proof of identity than a standard session grants.
+
 1. Go to the **Security** tab and then **Authentication Policies**
 2. Select **App Sign-In** then **Create Policy**
 3. Enter the following information then **Create Policy:**
@@ -180,7 +190,7 @@ The following should be in place before starting:
    - **If User's IP Is:** Any IP
    - **Then Access Is:** Allowed After Successful Authentication
    - **And User Must Authenticate With:** Password + Another Factor
-   - **And Posession Factor Constraints Are:** Uncheck Phishing Resistant
+   - **And Possession Factor Constraints Are:** Uncheck Phishing Resistant
    - **And Prompt for Password Authentication:** Every Time User Signs in to Resource
   
 <p align="center">
@@ -210,6 +220,8 @@ The following should be in place before starting:
 ---
 
 ### 6) Authenticator Enrollment Policy
+
+Requiring Okta Verify and disabling Email as a fallback in the Authenticator Enrollment Policy ensures every employee is held to the same authentication standard from their very first login. This prevents a weaker method like email verification from silently satisfying enrollment in place of a properly configured authenticator.
 
 1. Open the **Security** tab then **Authenticators** then open the **Enrollment** tab
 2. Then in the **Actions** dropdown and select **Edit**
